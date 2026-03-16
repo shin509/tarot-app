@@ -1,0 +1,222 @@
+
+import { useState, useEffect, useRef } from "react";
+
+const tarotDeck = [
+  { index: 0, name: "The Fool", nameKo: "바보", yn: "yes" },
+  { index: 1, name: "The Magician", nameKo: "마법사", yn: "yes" },
+  { index: 2, name: "The High Priestess", nameKo: "여사제", yn: "other" },
+  { index: 3, name: "The Empress", nameKo: "여황제", yn: "yes" },
+  { index: 4, name: "The Emperor", nameKo: "황제", yn: "yes" },
+  { index: 5, name: "The Hierophant", nameKo: "교황", yn: "other" },
+  { index: 6, name: "The Lovers", nameKo: "연인", yn: "yes" },
+  { index: 7, name: "The Chariot", nameKo: "전차", yn: "yes" },
+  { index: 8, name: "Strength", nameKo: "힘", yn: "yes" },
+  { index: 9, name: "The Hermit", nameKo: "은둔자", yn: "other" },
+  { index: 10, name: "Wheel of Fortune", nameKo: "운명의 수레바퀴", yn: "yes" },
+  { index: 11, name: "Justice", nameKo: "정의", yn: "other" },
+  { index: 12, name: "The Hanged Man", nameKo: "매달린 사람", yn: "other" },
+  { index: 13, name: "Death", nameKo: "죽음", yn: "other" },
+  { index: 14, name: "Temperance", nameKo: "절제", yn: "yes" },
+  { index: 15, name: "The Devil", nameKo: "악마", yn: "no" },
+  { index: 16, name: "The Tower", nameKo: "탑", yn: "no" },
+  { index: 17, name: "The Star", nameKo: "별", yn: "yes" },
+  { index: 18, name: "The Moon", nameKo: "달", yn: "no" },
+  { index: 19, name: "The Sun", nameKo: "태양", yn: "yes" },
+  { index: 20, name: "Judgement", nameKo: "심판", yn: "yes" },
+  { index: 21, name: "The World", nameKo: "세계", yn: "yes" },
+  { index: 22, name: "Ace of Wands", nameKo: "완드 에이스", yn: "yes" },
+  { index: 23, name: "Two of Wands", nameKo: "완드 2", yn: "yes" },
+  { index: 24, name: "Three of Wands", nameKo: "완드 3", yn: "yes" },
+  { index: 25, name: "Four of Wands", nameKo: "완드 4", yn: "yes" },
+  { index: 26, name: "Five of Wands", nameKo: "완드 5", yn: "no" },
+  { index: 27, name: "Six of Wands", nameKo: "완드 6", yn: "yes" },
+  { index: 28, name: "Seven of Wands", nameKo: "완드 7", yn: "other" },
+  { index: 29, name: "Eight of Wands", nameKo: "완드 8", yn: "yes" },
+  { index: 30, name: "Nine of Wands", nameKo: "완드 9", yn: "other" },
+  { index: 31, name: "Ten of Wands", nameKo: "완드 10", yn: "no" },
+  { index: 32, name: "Page of Wands", nameKo: "완드 시종", yn: "yes" },
+  { index: 33, name: "Knight of Wands", nameKo: "완드 기사", yn: "yes" },
+  { index: 34, name: "Queen of Wands", nameKo: "완드 여왕", yn: "yes" },
+  { index: 35, name: "King of Wands", nameKo: "완드 왕", yn: "yes" },
+  { index: 36, name: "Ace of Cups", nameKo: "컵 에이스", yn: "yes" },
+  { index: 37, name: "Two of Cups", nameKo: "컵 2", yn: "yes" },
+  { index: 38, name: "Three of Cups", nameKo: "컵 3", yn: "yes" },
+  { index: 39, name: "Four of Cups", nameKo: "컵 4", yn: "other" },
+  { index: 40, name: "Five of Cups", nameKo: "컵 5", yn: "no" },
+  { index: 41, name: "Six of Cups", nameKo: "컵 6", yn: "yes" },
+  { index: 42, name: "Seven of Cups", nameKo: "컵 7", yn: "other" },
+  { index: 43, name: "Eight of Cups", nameKo: "컵 8", yn: "other" },
+  { index: 44, name: "Nine of Cups", nameKo: "컵 9", yn: "yes" },
+  { index: 45, name: "Ten of Cups", nameKo: "컵 10", yn: "yes" },
+  { index: 46, name: "Page of Cups", nameKo: "컵 시종", yn: "yes" },
+  { index: 47, name: "Knight of Cups", nameKo: "컵 기사", yn: "yes" },
+  { index: 48, name: "Queen of Cups", nameKo: "컵 여왕", yn: "yes" },
+  { index: 49, name: "King of Cups", nameKo: "컵 왕", yn: "yes" },
+  { index: 50, name: "Ace of Swords", nameKo: "소드 에이스", yn: "yes" },
+  { index: 51, name: "Two of Swords", nameKo: "소드 2", yn: "other" },
+  { index: 52, name: "Three of Swords", nameKo: "소드 3", yn: "no" },
+  { index: 53, name: "Four of Swords", nameKo: "소드 4", yn: "other" },
+  { index: 54, name: "Five of Swords", nameKo: "소드 5", yn: "no" },
+  { index: 55, name: "Six of Swords", nameKo: "소드 6", yn: "other" },
+  { index: 56, name: "Seven of Swords", nameKo: "소드 7", yn: "no" },
+  { index: 57, name: "Eight of Swords", nameKo: "소드 8", yn: "no" },
+  { index: 58, name: "Nine of Swords", nameKo: "소드 9", yn: "no" },
+  { index: 59, name: "Ten of Swords", nameKo: "소드 10", yn: "no" },
+  { index: 60, name: "Page of Swords", nameKo: "소드 시종", yn: "other" },
+  { index: 61, name: "Knight of Swords", nameKo: "소드 기사", yn: "yes" },
+  { index: 62, name: "Queen of Swords", nameKo: "소드 여왕", yn: "other" },
+  { index: 63, name: "King of Swords", nameKo: "소드 왕", yn: "other" },
+  { index: 64, name: "Ace of Pentacles", nameKo: "펜타클 에이스", yn: "yes" },
+  { index: 65, name: "Two of Pentacles", nameKo: "펜타클 2", yn: "other" },
+  { index: 66, name: "Three of Pentacles", nameKo: "펜타클 3", yn: "yes" },
+  { index: 67, name: "Four of Pentacles", nameKo: "펜타클 4", yn: "other" },
+  { index: 68, name: "Five of Pentacles", nameKo: "펜타클 5", yn: "no" },
+  { index: 69, name: "Six of Pentacles", nameKo: "펜타클 6", yn: "yes" },
+  { index: 70, name: "Seven of Pentacles", nameKo: "펜타클 7", yn: "other" },
+  { index: 71, name: "Eight of Pentacles", nameKo: "펜타클 8", yn: "yes" },
+  { index: 72, name: "Nine of Pentacles", nameKo: "펜타클 9", yn: "yes" },
+  { index: 73, name: "Ten of Pentacles", nameKo: "펜타클 10", yn: "yes" },
+  { index: 74, name: "Page of Pentacles", nameKo: "펜타클 시종", yn: "yes" },
+  { index: 75, name: "Knight of Pentacles", nameKo: "펜타클 기사", yn: "yes" },
+  { index: 76, name: "Queen of Pentacles", nameKo: "펜타클 여왕", yn: "yes" },
+  { index: 77, name: "King of Pentacles", nameKo: "펜타클 왕", yn: "yes" },
+];
+
+const SYMBOLS = ["🌟","⚡","🌙","☀️","🔮","⚔️","🌹","🦋","🌊","🔥","🌿","💫","🎭","🌺","⚖️","🦅","🌛","💎","🏔️","🌈"];
+const LABELS = ["첫 번째", "두 번째", "세 번째"];
+const YNC = { yes:"#4ade80", no:"#f87171", other:"#fbbf24" };
+const YNL = { yes:"✅ YES", no:"❌ NO", other:"⚖️ 그 외" };
+
+export default function App() {
+  const [phase, setPhase] = useState("idle");
+  const [shuffleCard, setShuffleCard] = useState(tarotDeck[0]);
+  const [drawn, setDrawn] = useState([]);
+  const [used, setUsed] = useState([]);
+  const [pending, setPending] = useState(null);
+  const [flipped, setFlipped] = useState(false);
+  const ref = useRef(null);
+
+  const pick = (u) => {
+    let i; do { i = Math.floor(Math.random()*78); } while(u.includes(i));
+    return tarotDeck[i];
+  };
+
+  const startShuffle = () => {
+    setFlipped(false); setPhase("shuffling");
+    ref.current = setInterval(() => setShuffleCard(tarotDeck[Math.floor(Math.random()*78)]), 80);
+  };
+
+  const stop = () => {
+    clearInterval(ref.current);
+    const card = pick(used);
+    setPending(card); setUsed(p=>[...p,card.index]); setPhase("flipping");
+    setTimeout(() => { setFlipped(true); setPhase("revealed"); }, 500);
+  };
+
+  const confirm = () => {
+    const next = [...drawn, pending];
+    setDrawn(next); setPending(null); setFlipped(false);
+    setPhase(next.length>=3 ? "done" : "idle");
+  };
+
+  const reset = () => { setDrawn([]); setUsed([]); setPending(null); setFlipped(false); setPhase("idle"); };
+
+  useEffect(() => () => clearInterval(ref.current), []);
+
+  const sym = c => SYMBOLS[c.index % SYMBOLS.length];
+
+  return (
+    <div style={{ minHeight:"100vh", background:"radial-gradient(ellipse at 50% 0%,#1a0533,#080110 70%)", fontFamily:"Georgia,serif", color:"#e8d5b0", display:"flex", flexDirection:"column", alignItems:"center", padding:"2rem 1rem" }}>
+      <style>{`
+        @keyframes tw{0%,100%{opacity:.15}50%{opacity:.8}}
+        @keyframes fl{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+        @keyframes sh{0%{transform:rotate(-4deg) scale(1.03)}50%{transform:rotate(4deg) scale(.97)}100%{transform:rotate(-4deg) scale(1.03)}}
+        @keyframes gp{0%,100%{box-shadow:0 0 18px #9333ea55}50%{box-shadow:0 0 40px #c084fcaa,0 0 80px #9333ea44}}
+        @keyframes fi{0%{transform:rotateY(90deg);opacity:0}100%{transform:rotateY(0);opacity:1}}
+        @keyframes su{from{transform:translateY(16px);opacity:0}to{transform:translateY(0);opacity:1}}
+        .tb{cursor:pointer;border:none;transition:transform .15s}
+        .tb:hover{transform:scale(1.05)}
+        .tb:active{transform:scale(.97)}
+      `}</style>
+      <div style={{position:"fixed",inset:0,pointerEvents:"none",zIndex:0}}>
+        {Array.from({length:50}).map((_,i)=>(
+          <div key={i} style={{position:"absolute",borderRadius:"50%",width:"2px",height:"2px",background:"#fff",
+            top:`${(Math.sin(i*137.5)*.5+.5)*100}%`,left:`${(i*61.8)%100}%`,
+            animation:`tw ${2+i%4}s ease-in-out infinite`,animationDelay:`${(i*.27)%3}s`}}/>
+        ))}
+      </div>
+      <div style={{position:"relative",zIndex:1,width:"100%",maxWidth:"440px"}}>
+        <div style={{textAlign:"center",marginBottom:"1.8rem"}}>
+          <div style={{fontSize:"2.2rem",animation:"fl 3.5s ease-in-out infinite"}}>🔮</div>
+          <h1 style={{margin:".4rem 0 .2rem",fontSize:"1.6rem",color:"#e2c5ff",letterSpacing:".2em"}}>TAROT SHUFFLE</h1>
+          <p style={{margin:0,fontSize:".7rem",color:"#9b72cf",letterSpacing:".15em"}}>
+            {phase==="done" ? "✦ 3장 완료 · 채팅에서 해석받으세요 ✦" : `✦ ${LABELS[drawn.length]} 카드 ✦`}
+          </p>
+        </div>
+        {phase!=="done" && (
+          <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:"1.4rem"}}>
+            <div style={{
+              width:"160px",height:"260px",borderRadius:"14px",
+              display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",
+              position:"relative",overflow:"hidden",
+              background: flipped&&phase==="revealed" ? "linear-gradient(160deg,#fef9ee,#fde68a,#f0a830)" : "linear-gradient(160deg,#1b0840,#2d1b4e)",
+              border:`2px solid ${phase==="shuffling"?"#a855f7":flipped&&phase==="revealed"?"#f59e0b":"#4c1d95"}`,
+              animation: phase==="shuffling" ? "sh .15s ease-in-out infinite,gp 1.2s ease-in-out infinite"
+                : phase==="flipping" ? "fi .5s ease-out forwards"
+                : phase==="idle" ? "fl 3s ease-in-out infinite" : "none",
+            }}>
+              {!(flipped&&phase==="revealed") && <div style={{position:"absolute",inset:0,background:"repeating-linear-gradient(45deg,transparent,transparent 12px,rgba(168,85,247,.06) 12px,rgba(168,85,247,.06) 24px)"}}/>}
+              {phase==="shuffling" && <>
+                <div style={{fontSize:"2.6rem",marginBottom:".5rem"}}>{sym(shuffleCard)}</div>
+                <div style={{fontSize:".6rem",color:"#c4b5fd",textAlign:"center",padding:"0 12px",lineHeight:1.4}}>{shuffleCard.name}</div>
+              </>}
+              {flipped&&phase==="revealed"&&pending && (
+                <div style={{textAlign:"center",padding:"0 12px",animation:"fi .5s ease-out"}}>
+                  <div style={{fontSize:"2.8rem",marginBottom:".5rem"}}>{sym(pending)}</div>
+                  <div style={{fontSize:".85rem",color:"#1e1033",fontWeight:"bold"}}>{pending.nameKo}</div>
+                  <div style={{fontSize:".58rem",color:"#44337a",marginTop:".2rem"}}>{pending.name}</div>
+                  <div style={{marginTop:".6rem",fontSize:".68rem",fontWeight:"bold",color:YNC[pending.yn],background:`${YNC[pending.yn]}22`,borderRadius:"20px",padding:".2rem .7rem",display:"inline-block"}}>{YNL[pending.yn]}</div>
+                </div>
+              )}
+              {(phase==="idle"||phase==="flipping") && <div style={{color:"#3b1a6e",fontSize:"2rem"}}>✦</div>}
+            </div>
+            {phase==="shuffling" && <div style={{fontSize:".65rem",color:"#7c3aed"}}>#{shuffleCard.index} 셔플 중...</div>}
+            {flipped&&phase==="revealed"&&pending && <div style={{fontSize:".65rem",color:"#9167c0"}}>인덱스 #{pending.index}</div>}
+            {phase==="idle" && <button className="tb" onClick={startShuffle} style={{padding:".75rem 2.8rem",background:"linear-gradient(135deg,#7c3aed,#9333ea)",border:"1px solid #a855f7",borderRadius:"30px",color:"#f3e8ff",fontSize:".9rem",letterSpacing:".1em",animation:"gp 2s ease-in-out infinite"}}>🃏 셔플 시작</button>}
+            {phase==="shuffling" && <button className="tb" onClick={stop} style={{padding:".75rem 2.8rem",background:"linear-gradient(135deg,#b91c1c,#ef4444)",border:"1px solid #f87171",borderRadius:"30px",color:"#fff",fontSize:".9rem",letterSpacing:".1em",boxShadow:"0 0 20px #ef444466"}}>✋ 지금 멈추기!</button>}
+            {flipped&&phase==="revealed" && <button className="tb" onClick={confirm} style={{padding:".75rem 2.8rem",background:"linear-gradient(135deg,#065f46,#059669)",border:"1px solid #34d399",borderRadius:"30px",color:"#ecfdf5",fontSize:".9rem",letterSpacing:".1em",animation:"su .3s ease-out"}}>✅ 이 카드로 확정</button>}
+            {phase==="flipping" && <div style={{fontSize:".82rem",color:"#c084fc",animation:"fl 1s ease-in-out infinite"}}>카드를 뒤집는 중...</div>}
+          </div>
+        )}
+        {drawn.length>0 && (
+          <div style={{marginTop:"2rem",animation:"su .5s ease-out"}}>
+            <div style={{textAlign:"center",fontSize:".68rem",color:"#7c3aed",letterSpacing:".15em",marginBottom:"1rem"}}>✦ 뽑힌 카드 ✦</div>
+            <div style={{display:"flex",gap:".7rem",justifyContent:"center",flexWrap:"wrap"}}>
+              {drawn.map((c,i)=>(
+                <div key={i} style={{width:"115px",textAlign:"center",background:"linear-gradient(160deg,#12022a,#1e1040)",border:"1px solid #5b21b6",borderRadius:"12px",padding:".9rem .5rem",animation:"su .5s ease-out"}}>
+                  <div style={{fontSize:".58rem",color:"#7c3aed",marginBottom:".4rem"}}>{LABELS[i]}</div>
+                  <div style={{fontSize:"1.8rem",marginBottom:".35rem"}}>{sym(c)}</div>
+                  <div style={{fontSize:".7rem",color:"#e2c5ff",fontWeight:"bold",lineHeight:1.3,marginBottom:".2rem"}}>{c.nameKo}</div>
+                  <div style={{fontSize:".54rem",color:"#7c5ea3",marginBottom:".45rem"}}>#{c.index} · {c.name}</div>
+                  <div style={{fontSize:".62rem",fontWeight:"bold",color:YNC[c.yn],background:`${YNC[c.yn]}22`,borderRadius:"20px",padding:".18rem .5rem",display:"inline-block"}}>{YNL[c.yn]}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+        {phase==="done" && (
+          <div style={{marginTop:"2rem",textAlign:"center",padding:"1.6rem",borderRadius:"16px",background:"#12022a99",border:"1px solid #7c3aed",animation:"su .6s ease-out"}}>
+            <div style={{fontSize:"1.6rem",marginBottom:".5rem"}}>✨</div>
+            <div style={{fontSize:".95rem",color:"#e2c5ff",marginBottom:".6rem"}}>3장을 모두 뽑았습니다!</div>
+            <div style={{fontSize:".75rem",color:"#9167c0",lineHeight:1.8,marginBottom:".5rem"}}>
+              {drawn.map((c,i)=><span key={i}><span style={{color:"#c084fc"}}>{c.nameKo}</span>{i<2&&<span style={{color:"#5b21b6"}}> → </span>}</span>)}
+            </div>
+            <div style={{fontSize:".72rem",color:"#7c5ea3",marginBottom:"1.2rem"}}>채팅창에 결과를 보내면 해석해드릴게요 🔮</div>
+            <button className="tb" onClick={reset} style={{padding:".55rem 1.6rem",background:"transparent",border:"1px solid #7c3aed",borderRadius:"20px",color:"#c084fc",fontSize:".75rem",letterSpacing:".1em"}}>🔄 다시 뽑기</button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
